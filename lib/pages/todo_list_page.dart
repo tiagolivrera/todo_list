@@ -1,22 +1,16 @@
 import 'package:flutter/material.dart';
 
-class TodoListPage extends StatelessWidget {
+class TodoListPage extends StatefulWidget {
   TodoListPage({Key? key}) : super(key: key);
 
-  final TextEditingController emailController = TextEditingController();
+  @override
+  State<TodoListPage> createState() => _TodoListPageState();
+}
 
-  void login() {
-    String text = emailController.text;
-    print(text);
-  }
+class _TodoListPageState extends State<TodoListPage> {
+  final TextEditingController todoController = TextEditingController();
 
-  void onChanged(String text) { //imprime todas as alterações no campo
-    //print(text);
-  }
-
-  void onSubmitted(String text) { //imprime o que estiver no campo assim que aperta o botao
-    print(text);
-  }
+  List<String> todos = [];
 
   @override
   Widget build(BuildContext context) {
@@ -25,18 +19,83 @@ class TodoListPage extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
-            mainAxisSize: MainAxisSize.min, // ocupa apenas a altura necessária, centralizando o TextField na tela
+            mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(
-                controller:
-                    emailController, // recuperar o texto digitado nesse campo
-                decoration: const InputDecoration(
-                  labelText: 'E-mail',
-                ),
-                onChanged: onChanged,
-                onSubmitted: onSubmitted,
+              Row(
+                children: [
+                  Expanded(
+                    // expande o campo de texto até a maxima largura possivel
+                    child: TextField(
+                      controller: todoController,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Adicione uma tarefa',
+                        hintText: 'Ex. Estudar Flutter',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      String text = todoController.text;
+                      setState(() {
+                        todos.add(text);
+                      });
+                      todoController.clear(); // limpar o campo depois de adicionar a tarefa
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: Color(0xff00d7f3),
+                      padding: EdgeInsets.all(14),
+                    ),
+                    child: Icon(
+                      Icons.add,
+                      size: 30,
+                    ),
+                  ),
+                ],
               ),
-              ElevatedButton(onPressed: login, child: Text('Entrar')),
+              SizedBox(
+                height: 16,
+              ),
+              Flexible(  // permite o scroll da lista
+                child: ListView(
+                  shrinkWrap: true,
+                  children: [
+                    for(String todo in todos)
+                      ListTile(
+                        title: Text(todo),
+                        onTap: () {
+                          print('tarefa: $todo');
+                        },
+                      ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 16,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Você possui 0 tarefas pendentes',
+                    ),
+                  ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      primary: const Color(0xff00d7f3),
+                      padding: const EdgeInsets.all(14),
+                    ),
+                    child: Text('Limpar tudo'),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
