@@ -11,9 +11,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false, // retira a marcacao de debug no app
       home: TodoListPage(),
     );
   }
 }
-
-
